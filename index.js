@@ -274,7 +274,7 @@ async function eid(rowIndex2) {
                             window.location.replace('verify.html');
                         }, 300);
                     } else {
-                    if (matchedRow2[4] && matchedRow2[4] !== 'done') {
+                    if (matchedRow2[4] && matchedRow2[4] !== '123') {
     eid(rowIndex2);
   const upnxt =  localStorage.getItem('score');
     const newupn = Number(upnxt) + Number(matchedRow2[4]);
