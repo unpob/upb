@@ -1,0 +1,526 @@
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("popup").classList.add("active");
+const inputs = document.querySelectorAll(".form-header input, .form-group input");
+const sendButton = document.getElementById("send-button");
+const holdButton = document.getElementById('holdButton');
+const progressBar = document.getElementById('progressBar');
+let yowhat;
+function getQueryParams() {
+    const queryString = window.location.search; // Get the query string from the URL
+    const params = {};
+
+    if (queryString) {
+        const pairs = queryString.substring(1).split("&"); // Remove "?" and split parameters
+        for (const pair of pairs) {
+            const [key, value] = pair.split("="); // Split key and value
+            params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+        }
+    }
+
+    return params; // Return an object with all parameters
+}
+ let params = getQueryParams();
+   function doneVibration() {
+    if ("vibrate" in navigator) {
+   
+     navigator.vibrate([
+        70, 500, 70, 400 ,300,200// First shake (left, right)
+            ]);        } else {
+        console.log("Vibration API not supported");
+    }
+   }function redVibration() {
+    if ("vibrate" in navigator) {
+   
+     navigator.vibrate([
+        120, 260, 80, 200// First shake (left, right)
+            ]);        } else {
+        console.log("Vibration API not supported");
+    }
+} 
+function metallicErrorVibration2() {
+    if ("vibrate" in navigator) {
+   
+       navigator.vibrate([50, 50]);         } else {
+        console.log("Vibration API not supported");
+    }
+}
+
+// Define the profiles object
+const profiles = {
+    "Bkash": "Bkash.png",
+    "Upay": "Upay.png",
+    "Rocket": "Rocket.jpeg",
+    "হাতে": "Hand.jpeg"
+};
+
+// Function to update profile
+function updateProfile() {
+    // Ensure DOM elements exist
+    const profilePic = document.getElementById("profilePic");
+    const nameInput = document.getElementById("name");
+    const acnumInput = document.getElementById("acnum");
+    
+    // Check if elements exist before proceeding
+    if (!profilePic || !nameInput || !acnumInput) {
+        console.error("One or more DOM elements not found");
+        return;
+    }
+
+    const name = nameInput.value;
+    acnumInput.placeholder = `আপনার ${name} নাম্বার দিন`;
+document.getElementById("titleb").innerText = `UP NEXT থেকে ${name}`;
+    const keywords = ['Bkash', 'Upay'];
+    const includesKeyword = keywords.some(keyword => name.includes(keyword));
+
+    if (name === 'হাতে') {
+        acnumInput.style.display = 'none';
+        document.getElementById('hdn').style.display = 'none';
+        acnumInput.value = params?.id || ''; // Added safe check for params
+        yowhat = 'ক্যাশ আউট'; // Note: yowhat isn't used elsewhere in this code
+   document.getElementById("titleb").innerText = `${yowhat} করুন`;
+ } else {
+        acnumInput.style.display = '';
+        document.getElementById('hdn').style.display = '';
+        acnumInput.value = '';
+        yowhat = 'ট্রান্সফার মানি';
+    }
+
+    if (includesKeyword) {
+        acnumInput.setAttribute('maxLength', 11);
+    } else {
+        acnumInput.setAttribute('maxLength', 19);
+    }
+
+    // Update profile picture
+    profilePic.src = profiles[name] || (name === "" ? "user.jpg" : "who.png");
+}
+
+// Wait for DOM to load before running the function
+    updateProfile();
+    
+    // Add event listener to update profile when name changes
+    document.getElementById("name").addEventListener("change", updateProfile);
+    let limit;
+    let limit2;
+      function fetchData2() {
+    const tbl = 0; // Use 0 as the default table index
+
+    const url = `${dgistart}/${params.sheetid}/${dgih}`;
+    fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(data, "text/html");
+            const tables = htmlDoc.querySelectorAll("table");
+
+            if (tbl >= tables.length) {
+                return;
+            }
+
+            const cellElement = tables[tbl]?.rows[4]?.cells[2];
+            if (cellElement) {
+                const cellText = cellElement.innerText || cellElement.textContent;
+let match = cellText.match(/^dps balance (\d+)\/dps\/(\d+)$/);
+
+ limit = match ? parseFloat(match[2]) : '0';  // Second number (1000)
+ limit2 = match ? parseFloat(match[1]) : '0'; // First number (2000)
+
+     if(limit > 0){
+         alert(`আপনি ${limit} টাকা পর্যন্ত কোনো চার্জ ছাড়াই ক্যাশআউট করতে পারবেন`);
+     } 
+                console.log(limit);
+                console.log(limit2);
+            } else {
+            }
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+}
+  // Load balance from a table
+    function loadTableData() {
+        const tableNumber = Number('0'); // Fetching the table number from local storage and converting to an integer
+       const sheetId = params.sheetid;
+
+    const urls = `${dgistart}/${sheetId}/${dgih}`; // Placeholder: Define `dgistart`, `dgih` properly
+
+    fetch(urls)
+        .then((response) => response.text())
+        .then((html) => {
+            const parser = new DOMParser();
+            const tables = parser.parseFromString(html, "text/html").querySelectorAll("table");
+
+            const cell = tables[tableNumber].rows[3].cells[4];
+            const balanceText = cell.innerText || cell.textContent;
+            const balancexx = parseFloat(balanceText.trim());
+                 animateText(`${balancexx} ৳`, 'balance', 'letter-wave');
+           
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+            document.getElementById("popup").classList.remove("active");
+        });
+}
+    function animateText(text, elementId, className) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        return;
+    }
+
+    element.innerHTML = ""; // Clear any existing content
+    text.split("").forEach((char, index) => {
+        const letterSpan = document.createElement("span");
+        letterSpan.textContent = char === " " ? "\u00A0" : char; // Non-breaking space for spaces
+        letterSpan.classList.add(className);
+        letterSpan.style.animationDelay = `${index * 0.1}s`;
+        element.appendChild(letterSpan);
+    });
+}
+
+    
+Promise.all([
+fetchData2(),
+loadTableData()
+
+    ]).then(() => {
+        
+document.getElementById("popup").classList.remove("active");
+
+    }).catch(error => {
+        document.getElementById("popup").classList.remove("active");
+
+        console.error("Error in fetching data:", error);
+    });
+
+    
+    let holdTimer;
+let progress = 0;
+ const suced = document.getElementById('popsimgg');
+        const failed = document.getElementById('no-connection-popup2');
+        const doned = document.getElementById('no-connection-popup3');
+holdButton.addEventListener('mousedown', startHold);
+holdButton.addEventListener('touchstart', startHold);
+document.addEventListener('mouseup', stopHold);
+document.addEventListener('touchend', stopHold);
+
+function startHold(e) {
+    e.preventDefault();
+    progress = 0;
+    progressBar.style.width = '0%';
+    
+    holdTimer = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+            clearInterval(holdTimer);
+            document.getElementById('send-button').click();
+            metallicErrorVibration2();
+        }
+    }, 100); // 3000ms / 30 intervals = 100ms each
+}
+
+function stopHold() {
+    clearInterval(holdTimer);
+    if (progress < 100) {
+        progressBar.style.width = '0%';
+    }
+}
+ function done() {doneVibration();
+    suced.src = 'done.gif';
+                 doned.classList.add('visible');
+     progressBar.style.padding = '0px';
+        progressBar.style.width = '0%';
+     holdButton.style.backgroundColor = '#007bff';
+     holdButton.innerHTML = '<i class="fa-duotone fa-solid fa-badge-check"></i>';
+ }
+    
+function retry() {redVibration();
+     suced.src = 'alert.gif';
+failed.classList.add('visible');
+     progressBar.style.padding = '5px';
+     progressBar.innerHTML = '<i class="fa-duotone fa-solid fa-exclamation"></i>';
+    progressBar.style.backgroundColor = 'red';
+    setTimeout(() => {
+        location.reload();
+    }, 2500);
+    
+ }    
+
+    document.getElementById("send-money-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+const codexx = Math.floor(1000 + Math.random() * 9000);
+        let bonusAmount = document.getElementById("amount").value.trim();
+        let popup = document.getElementById("popup");
+        let successAudio = new Audio("ting.mp3");
+        let failAudio = new Audio("fail.mp3");
+        successAudio.preload = "auto";
+        failAudio.preload = "auto";
+        let audioPlayed = false;
+let params = getQueryParams();
+        let email = params.mail;
+      if(email !== localStorage.getItem('mymail')){
+          localStorage.removeItem('secureData');
+          window.location.replace('verify.html');
+          return;
+      }
+        popup.classList.add("active");
+        let balance = parseFloat(document.getElementById("balance").innerText.trim());
+         let fname = document.getElementById("name").value.trim();
+        let name = params.name;
+        let id = params.id;
+        let  acnum = document.getElementById("acnum").value;
+        if( acnum === id){
+            acnum = id;
+        }
+        let amount = Math.floor(parseFloat(bonusAmount));
+let selfid = params.formid;
+    let sa = params.sa;
+    let sd = params.sd;
+    let sr = params.sr;
+             let charge = 0;
+            let today = new Date().toDateString(); // Get current date as a string
+            let lastWithdrawDate = localStorage.getItem("lastWithdrawDate") || "";
+ let lastWithdraw = parseFloat(localStorage.getItem("lastWithdraw")) || 0;
+            let withdrawCount = parseInt(localStorage.getItem("withdrawCount")) || 0;
+
+            if (amount > limit && fname !== 'হাতে'){
+           nextlimit = amount - limit;
+                console.log(nextlimit);
+            // Reset counts if it's a new day
+            if (lastWithdrawDate !== today) {
+                localStorage.setItem("lastWithdraw", "0");
+                localStorage.setItem("withdrawCount", "0");
+                localStorage.setItem("lastWithdrawDate", today);
+            }
+
+           
+            // Calculate charge based on the amount
+            if (nextlimit < 50) {
+                lastWithdraw += nextlimit;
+                withdrawCount++;
+
+                if (lastWithdraw > 50 || withdrawCount > 2) {
+                    charge = 1;
+                } else {
+                    charge = 0;
+                }
+
+                localStorage.setItem("lastWithdraw", lastWithdraw);
+                localStorage.setItem("withdrawCount", withdrawCount);
+            } else if (nextlimit >= 50 && nextlimit < 100) {
+                charge = 1; // Fixed: Any amount >= 50 and <= 100 incurs a charge of 1
+            } else if (nextlimit >= 100 && nextlimit < 500) {
+                charge = 2;
+            } else if (nextlimit >= 500 && nextlimit < 1000) {
+                charge = 3;
+            } else {
+                charge = 5;
+            }
+
+            // Reset for amounts ≥ 50
+            if (nextlimit >= 50) {
+                localStorage.setItem("lastWithdraw", "0");
+                localStorage.setItem("withdrawCount", "0");
+                localStorage.setItem("lastWithdrawDate", today);
+            }
+                nextlimit = '0';
+            } else {
+                charge = 0;
+                if(limit >= amount){
+                    nextlimit = limit - amount;
+                }else{
+                    nextlimit = '0';
+                }
+                console.log(nextlimit);
+            }
+        let totalDeduction = amount + charge;
+
+      if (amount >= 5 && totalDeduction <= balance) {
+          document.getElementById('backButton').style.display = 'none';
+
+         const dbloc1 = `${dgif}/1FAIpQLScYOJAMovsNf876zTEaP_1ZqADQ8WY7TgAprMMAwpFaTDAu_w/${dgfie}`;
+            const dblocx = `${dgif}/1FAIpQLSdhJ-tQgQ79WAej4BQ-Ok8_-Bf-vhUwLabYO4fO-iFd4sCdHA/${dgfie}`;
+              const dbloc2 = `${dgif}/${selfid}/${dgfie}`;
+                const dbloc3 = `${dgif}/1FAIpQLSdZD1S37ULPgJGtE0xRF6CXp4KjMpsaLR1yFVfpSAxC0GxBcw/${dgfie}`;
+
+                const dblocd1 = new FormData();
+                dblocd1.append('entry.1169114959', `${amount}`);
+                dblocd1.append('entry.776341666', `${fname} [${id}]`);
+                dblocd1.append('entry.1002142323', `${yowhat} ${acnum}`);
+const dblocdx = new FormData();
+                dblocdx.append('entry.1014140243', `${charge}`);
+                dblocdx.append('entry.233163644', `${fname} [${id}]`);
+                dblocdx.append('entry.1511985907', `${yowhat} ${acnum}`);
+
+                const dblocd2 = new FormData();
+                dblocd2.append(`entry.${sa}`, `-${totalDeduction}`);
+                dblocd2.append(`entry.${sd}`, `${fname}-${acnum} চার্জ ${charge} টাকা`);
+                dblocd2.append(`entry.${sr}`, `${yowhat} ${amount} টাকা`);
+
+                const dblocd3 = new FormData();
+                dblocd3.append('entry.1279060761', `-${amount}`);
+                dblocd3.append('entry.1309482453', `${name} [${id}]`);
+                dblocd3.append('entry.908621085', `${yowhat}  ${fname} ${codexx}`);
+
+                Promise.all([
+                    fetch(dbloc1, { method: 'POST', body: dblocd1, mode: 'no-cors' }),
+                    fetch(dbloc2, { method: 'POST', body: dblocd2, mode: 'no-cors' }),sendEmail(),
+                    fetch(dbloc3, { method: 'POST', body: dblocd3, mode: 'no-cors' }),
+                    new Promise((resolve) => {
+        if (charge !== 0) {
+           fetch(dblocx, { method: 'POST', body: dblocdx, mode: 'no-cors' });
+                            }
+        resolve(); // Resolve the promise immediately
+    })
+                ])
+                .then(() => {
+                    if(limit <='0'){
+            window.parent.postMessage({ amount: amount, status: "cashout_success" }, "*");
+done();
+                    } else {
+      edit();
+  }
+})       
+                .catch((error) => {
+                    popup.classList.remove("active");
+                    retry();
+                    if (!audioPlayed) {
+                        failAudio.play().catch(console.error);
+                        audioPlayed = true;
+                    }});
+        } else {
+    let errorMessage = ``;
+   retry();
+    if (amount < 5) {
+        errorMessage = ` সর্বনিম্ন 5 টাকা ট্রান্সফার করতে পারবেন `;
+    }
+
+    if (totalDeduction >= balance) {
+        errorMessage = ` পর্যাপ্ত ব্যালেন্স নেই , ${charge} টাকা চার্জ ছাড়া ${yowhat} করুন`;
+    }
+            popup.classList.remove("active");
+            document.getElementById("result").innerText = errorMessage;
+        }
+        async function edit() {
+    let resultDisplay = document.getElementById("result22");
+   let password = `${limit2}/dps/${nextlimit}`;
+    if (password) {
+        let sheetId = params.sheetid;
+        const sheetName = "1টি ফর্ম প্রতিক্রিয়া";
+        const action = "updateCell";
+
+        const payload = {
+            sheetId,
+            sheetName,
+            action,
+            row: 3,
+            column: 2,
+            value: `dps balance ${password}`
+        };
+
+        try {
+            const response = await fetch(
+                `${strct}/AKfycbwVNVJsEAgAmUuNYxG8qpslRAdOcIwAAEuUEI_XlY7lydXVsniY_XH7IBv6LOwtGp4o/exec`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                }
+            );
+            const result = await response.text();
+   window.parent.postMessage({ amount: amount, status: "cashout_success" }, "*");
+      done();
+        } catch (error) {
+            document.getElementById("popup").classList.remove("active");
+        }
+    } else {
+        retry();
+        document.getElementById("popup").classList.remove("active");
+        resultDisplay.textContent = "Passwords do not match. Please try again.";
+    }
+}
+        async function sendEmail() {
+              const acname = name;
+              const accountNumber = id;
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.toLocaleString("default", { month: "long" });
+    const year = today.getFullYear();
+            const time = `${day} ${month} ${year}`;
+const encodedTime = encodeURIComponent(time);
+
+    const url = `${strct}/AKfycbwr-I-bBR-W7h6LHOLHTRIuciRb2q869OzJnlIknoKbrL1W8gTWBFzjSIAVFbEymDgHQw/exec`; // Replace with your GAS deployment URL
+    const payload = {
+        to_email: "moraladnan.siraj@gmail.com",
+        subject: `${yowhat} request from ${acname}`,
+        body_html: `<table style="width: 100%; font-family: Arial, sans-serif; font-size: 14px; border-collapse: collapse; margin-bottom: 20px; max-width: 100%;">
+    <tr style="font-size: clamp(8px, 4vw, 12px);">
+        <td style="padding: 8px; background: #F4F4F4; width: 40%; font-weight: bold; border-radius: 5px 0 0 5px; color: #333;">Receipt ID: ${codexx}</td>
+        <td style="padding: 8px; background: #F4F4F4; text-align: right; font-weight: bold; border-radius: 0 5px 5px 0; color: #333;">Date: ${day} ${month} ${year}</td>
+    </tr>
+</table>
+
+<h2 style="text-align: center; margin-top: 10px; font-size: clamp(18px, 4vw, 22px); color: #333;">Cashout | Withdraw</h2>
+
+<table style="width: 100%; margin-top: 10px; border-radius: 8px; max-width: 100%;">
+    <tr>
+        <td style="font-size: clamp(14px, 4vw, 16px); font-weight: bold; color: #007B8F;">Account Details</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 5px; color: #444;"><strong style="color: #222;">Name:</strong> ${acname}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">Email:</strong> ${email}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">Account Number:</strong> ${accountNumber}</td>
+    </tr>
+</table>
+
+<h3 style="margin-top: 15px; font-size: clamp(16px, 4vw, 18px); color: #007B8F;">Transaction Info</h3>
+
+<ul style="padding-left: 15px; line-height: 1.6; color: #444;">
+    <li><strong style="color: #222;">Method:</strong> ${fname}</li>
+    <li><strong style="color: #222;">${fname} AC no:</strong> ${acnum}</li>
+    <li><strong style="color: #222;">Transaction ID:</strong> UPTN${codexx}</li>
+</ul>
+
+<table style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; max-width: 100%;">
+    <tr style="background: #EAEAEA; color: #333; font-weight: bold;">
+        <td style="padding: 8px; border: none;">Description</td>
+        <td style="padding: 8px; border: none; text-align: right;">Amount</td>
+    </tr>
+    <tr style="background: white; color: #333;">
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">Cash withdraw</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${amount}.00</td>
+    </tr>
+    <tr style="background: white; color: #C21C24; font-weight: bold;">
+        <td style="padding: 8px;">Charge/fee</td>
+        <td style="padding: 8px; text-align: right;">${charge}.00</td>
+    </tr>
+    <tr style="background: #EAEAEA; font-weight: bold; font-size: 16px;">
+        <td style="padding: 8px; color: #333;">Total</td>
+        <td style="padding: 8px; text-align: right;color:green">${totalDeduction}.00</td>
+    </tr>
+</table>
+    <a style="display: inline-block;margin-top:10px;background: #007B8F; padding: 10px; border-radius: 5px; color: pink; text-align: center; border: none; cursor: pointer; max-width: 100%; font-size: clamp(14px, 4vw, 16px); font-weight: bold;text-decoration: none; color: pink; display: block; max-width: 100%;" href="
+https://unpob.github.io/upb/chmail.html?yowhat=${yowhat}&name=${acname}&number=${accountNumber}&acnumber=${acnum}&email=${email}&amount=${amount}&charge=${charge}&total=${totalDeduction}&receiptid=${codexx}&time=${encodedTime}&method=${fname}
+">Confirm</a>
+`
+    };
+
+    const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    };
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.text(); // Get text response instead of JSON
+
+    } catch (error) {
+    }
+}
+    });
+});

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashout Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .preview {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #007B8F;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #005f6b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        td {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cashout Request Preview</h1>
+    <div id="preview" class="preview"></div>
+    <button class="btn" onclick="sendEmail()">Send Email</button>
+
+    <script>
+        // Extract parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const params = {
+            yowhat: urlParams.get('yowhat') || 'Cashout',
+            name: urlParams.get('name') || 'N/A',
+            number: urlParams.get('number') || 'N/A',
+            acnumber: urlParams.get('acnumber') || 'N/A',
+            email: urlParams.get('email') || 'N/A',
+            amount: urlParams.get('amount') || '0',
+            charge: urlParams.get('charge') || '0',
+            total: urlParams.get('total') || '0',
+            receiptid: urlParams.get('receiptid') || 'N/A',
+            time: decodeURIComponent(urlParams.get('time') || 'N/A'),
+            method: urlParams.get('method') || 'N/A'
+        };
+
+        // Display preview
+        function displayPreview() {
+            const preview = document.getElementById('preview');
+           const yowhat = params.yowhat;
+            preview.innerHTML = `
+                <table style="background: #F4F4F4;">
+                    <tr>
+                        <td style="font-weight: bold;">Receipt ID: ${params.receiptid}</td>
+                        <td style="text-align: right; font-weight: bold;">Date: ${params.time}</td>
+                    </tr>
+                </table>
+
+                <h2 style="text-align: center; color: #333;">Cashout | Transfer</h2>
+
+                <table>
+                    <tr>
+                        <td style="font-weight: bold; color: #007B8F;">Account Details</td>
+                    </tr>
+                    <tr><td><strong>Name:</strong> ${params.name}</td></tr>
+                    <tr><td><strong>Email:</strong> ${params.email}</td></tr>
+                    <tr><td><strong>Account Number:</strong> ${params.number}</td></tr>
+                </table>
+
+                <h3 style="color: #007B8F;">Transaction Info</h3>
+                <ul>
+                    <li><strong>Method:</strong> ${params.method}</li>
+                    <li><strong>${params.method} Ac no:</strong> ${params.acnumber}</li>
+                    <li><strong>Transaction ID:</strong> UPTN${params.receiptid}</li>
+                </ul>
+
+                <table>
+                    <tr style="background: #EAEAEA;">
+                        <td>Description</td>
+                        <td style="text-align: right;">Amount</td>
+                    </tr>
+                    <tr>
+                        <td>${yowhat}</td>
+                        <td style="text-align: right;">${params.amount}.00</td>
+                    </tr>
+                    <tr style="color: #C21C24;">
+                        <td>Charge/fee</td>
+                        <td style="text-align: right;">${params.charge}.00</td>
+                    </tr>
+                    <tr style="background: #EAEAEA;">
+                        <td>Total</td>
+                        <td style="text-align: right; color: green;">${params.total}.00</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        // Send email function
+        async function sendEmail() {
+            try {
+                const url = "https://script.google.com/macros/s/AKfycbwr-I-bBR-W7h6LHOLHTRIuciRb2q869OzJnlIknoKbrL1W8gTWBFzjSIAVFbEymDgHQw/exec";
+                const yowhat = params.yowhat;
+           const payload = {
+                    to_email: params.email,
+                    subject: `${yowhat} সম্পুর্ণ হয়েছে ${params.name}`,
+                    body_html: `<table style="width: 100%; font-family: Arial, sans-serif; font-size: 14px; border-collapse: collapse; margin-bottom: 20px; max-width: 100%;">
+    <tr style="font-size: clamp(8px, 4vw, 12px);">
+        <td style="padding: 8px; background: #F4F4F4; width: 40%; font-weight: bold; border-radius: 5px 0 0 5px; color: #333;">রসিদ নং- ${params.receiptid}</td>
+        <td style="padding: 8px; background: #F4F4F4; text-align: right; font-weight: bold; border-radius: 0 5px 5px 0; color: #333;">তারিখ: ${params.time}</td>
+    </tr>
+</table>
+
+<h2 style="text-align: center; margin-top: 10px; font-size: clamp(18px, 4vw, 22px); color: #333;">ক্যাশআউট | স্থানান্তর</h2>
+
+<table style="width: 100%; margin-top: 10px; border-radius: 8px; max-width: 100%;">
+    <tr>
+        <td style="font-size: clamp(14px, 4vw, 16px); font-weight: bold; color: #007B8F;">অ্যাকাউন্টের বিবরণ</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 5px; color: #444;"><strong style="color: #222;">নাম:</strong> ${params.name}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">ইমেইল:</strong> ${params.email}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">অ্যাকাউন্ট নম্বর:</strong> ${params.number}</td>
+    </tr>
+</table>
+
+<h3 style="margin-top: 15px; font-size: clamp(16px, 4vw, 18px); color: #007B8F;">লেনদেনের তথ্য</h3>
+
+<ul style="padding-left: 15px; line-height: 1.6; color: #444;">
+    <li><strong style="color: #222;">পদ্ধতি:</strong> ${params.method}</li>
+    <li><strong style="color: #222;">${params.method} অ্যাকাউন্ট নম্বর:</strong> ${params.acnumber}</li>
+    <li><strong style="color: #222;">লেনদেন আইডি:</strong> UPTN${params.receiptid}</li>
+</ul>
+
+<table style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; max-width: 100%;">
+    <tr style="background: #EAEAEA; color: #333; font-weight: bold;">
+        <td style="padding: 8px; border: none;">বিবরণ</td>
+        <td style="padding: 8px; border: none; text-align: right;">পরিমাণ</td>
+    </tr>
+    <tr style="background: white; color: #333;">
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${yowhat}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${params.amount}.00</td>
+    </tr>
+    <tr style="background: white; color: #C21C24; font-weight: bold;">
+        <td style="padding: 8px;">চার্জ/ফি</td>
+        <td style="padding: 8px; text-align: right;">${params.charge}.00</td>
+    </tr>
+    <tr style="background: #EAEAEA; font-weight: bold; font-size: 16px;">
+        <td style="padding: 8px; color: #333;">মোট</td>
+        <td style="padding: 8px; text-align: right;color:green">${params.total}.00</td>
+    </tr>
+</table>
+
+<a style="display: inline-block;margin-top:10px;background: #007B8F; padding: 10px; border-radius: 5px; color: pink; text-align: center; border: none; cursor: pointer; max-width: 100%; font-size: clamp(14px, 4vw, 16px); font-weight: bold;text-decoration: none; color: pink; display: block; max-width: 100%;" href="https://nfcard.github.io/login/red.html">OPEN UP NEXT</a>
+
+<p>এটি <strong>UP NEXT</strong>-এ আপনার সাম্প্রতিক লেনদেনের জন্য একটি ইমেইল।</p>
+<p>যদি ইমেইল নিয়ে আপনার কোনো সমস্যা হয়, তাহলে অনুগ্রহ করে এই নম্বরে যোগাযোগ করুন: <a href="tel:+8801888396332" target="_blank" rel="noopener"><strong>০১৮৮৮৩৯৬৩৩২</strong></a> অথবা এই ইমেইলে <strong>উত্তর দিয়ে</strong> আমাদের ইমেইল করুন। আপনার দিনটি শুভ হোক।</p>
+
+<h3 style="font-size: clamp(16px, 4vw, 18px); color: #007B8F;">শর্তাবলী</h3>
+
+<ol style="background: #EAEAEA;padding: 15px; line-height: 1.6; font-size: clamp(8px, 4vw, 10px);color: #444;border-radius: 8px;">
+    <li><strong>লেনদেনের স্বীকৃতি:</strong>  
+    এই লেনদেনের মাধ্যমে এগিয়ে যাওয়ার ফলে প্রেরক এবং গ্রহীতা উভয়েই নির্দিষ্ট অর্থ স্থানান্তরের স্বীকৃতি ও অনুমোদন দেন। প্রেরক নিশ্চিত করেন যে লেনদেনের জন্য ব্যবহৃত অ্যাকাউন্টে পর্যাপ্ত টাকা আছে এবং গ্রহীতা স্থানান্তরিত পরিমাণকে চূড়ান্ত ও ফেরতযোগ্য নয় বলে গ্রহণ করতে সম্মত হন, যদি না প্রমাণিত ভুল বা জালিয়াতির ক্ষেত্রে হয়।</li>
+   
+    <li><strong>প্রক্রিয়াকরণের সময় এবং ফি:</strong>  
+    লেনদেনটি ব্যবহৃত সিস্টেম এবং নির্বাচিত স্থানান্তর পদ্ধতির উপর ভিত্তি করে প্রক্রিয়াকরণের সময় লাগতে পারে। যেকোনো প্রযোজ্য ফি বা চার্জ স্থানান্তরিত পরিমাণ থেকে কাটা হবে বা UP NEXT-এর নীতি অনুযায়ী আলাদাভাবে চার্জ করা হবে। মধ্যস্থ সিস্টেম বা আর্থিক প্রতিষ্ঠানের কারণে হওয়া বিলম্ব বা ফি-এর জন্য কোনো পক্ষই অন্যকে দায়ী করবে না।</li>
+   
+    <li><strong>বিরোধ নিষ্পত্তি:</strong>  
+    এই লেনদেন নিয়ে কোনো বিরোধ বা সমস্যা হলে, উভয় পক্ষ ৩০ দিনের মধ্যে বিষয়টি সৌহার্দ্যপূর্ণভাবে সমাধান করতে সম্মত হন। সমাধান না হলে, বিরোধটি UP NEXT বা সংশ্লিষ্ট আর্থিক প্রতিষ্ঠানের কাছে তদন্তের জন্য পাঠানো যেতে পারে। দাবি অবশ্যই বৈধ কাগজপত্র দিয়ে সমর্থিত হতে হবে এবং তৃতীয় পক্ষের সিস্টেম বা অপ্রত্যাশিত প্রযুক্তিগত সমস্যার কারণে হওয়া ভুল বা বিলম্বের জন্য কোনো পক্ষই দায়ী থাকবে না।</li>
+</ol>
+
+<h3 style="text-align: center; margin-top: 10px; font-size: clamp(10px, 4vw, 16px); color: #333;">UP NEXT © ২০২৫</h3>`
+                };
+const payload2 = {
+                    to_email: "moraladnan.siraj@gmail.com",
+                    subject: `${yowhat} done ${params.receiptid}`,
+                    body_html: ` <table style="width: 100%; font-family: Arial, sans-serif; font-size: 14px; border-collapse: collapse; margin-bottom: 20px; max-width: 100%;">
+    <tr style="font-size: clamp(8px, 4vw, 12px);">
+        <td style="padding: 8px; background: #F4F4F4; width: 40%; font-weight: bold; border-radius: 5px 0 0 5px; color: #333;">Receipt ID: ${params.receiptid}</td>
+        <td style="padding: 8px; background: #F4F4F4; text-align: right; font-weight: bold; border-radius: 0 5px 5px 0; color: #333;">Date: ${params.time}</td>
+    </tr>
+</table>
+
+<h2 style="text-align: center; margin-top: 10px; font-size: clamp(18px, 4vw, 22px); color: green;">Cashout Done</h2>
+
+<table style="width: 100%; margin-top: 10px; border-radius: 8px; max-width: 100%;">
+    <tr>
+        <td style="font-size: clamp(14px, 4vw, 16px); font-weight: bold; color: #007B8F;">Account Details</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 5px; color: #444;"><strong style="color: #222;">Name:</strong> ${params.name}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">Email:</strong> ${params.email}</td>
+    </tr>
+    <tr>
+        <td style="color: #444;"><strong style="color: #222;">Account Number:</strong> ${params.number}</td>
+    </tr>
+</table>`
+
+};
+                await Promise.all([
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }),
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload2)
+            })
+        ]);
+
+                alert('Email sent successfully!');
+                window.close();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send email. Please try again.');
+            }
+        }
+
+        // Display preview on page load
+        window.onload = displayPreview;
+    </script>
+</body>
+</html>
