@@ -116,7 +116,7 @@ submitBtn.addEventListener('click', () => {
     const coinsUsed = amount * exchangeRate; // Calculate exact coins used
     const currentScore = parseFloat(localStorage.getItem('score')) || 0;
     const remainingScore = currentScore - coinsUsed; // Calculate remaining coins
-    const msg2 = "বোনাস Redeem $UPNXT";
+    const msg2 = "বোনাস Redeem";
     const description = id;
     const selfid = secureData.formId;
     const sa = secureData.saEntry;
@@ -138,7 +138,7 @@ submitBtn.addEventListener('click', () => {
 
         const dblocd2 = new FormData();
         dblocd2.append(`entry.${sa}`, `${amount}`);
-        dblocd2.append(`entry.${sd}`, `Total point ${coinsUsed}`);
+        dblocd2.append(`entry.${sd}`, `Total ${coinsUsed} $UPNXT`);
         dblocd2.append(`entry.${sr}`, msg2);
 
         const dblocd3 = new FormData();
