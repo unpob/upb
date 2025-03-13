@@ -61,7 +61,7 @@ async function fetchabcdhhs() {
             const saEntry = row[7]; 
             const xname = row[2];        // Example: SA Entry
             const imageUrl = row[8];     // Column 9 is the image URL
-const stat= row[11];
+const stat= row[13];
 
             // Store the data if phone number and image URL exist
             if (phoneNumber && imageUrl) {
@@ -94,7 +94,7 @@ function updateProfile(phonenumber) {
             document.getElementById('sae').value = saEntry || 'N/A';
             document.getElementById('acname').value = xname;
              let   hisname = document.getElementById('hisname');
-           if(hisname && stat !== '123'){
+           if(hisname && stat !== 'ban'){
                 document.getElementById('hisname').innerText = xname;
             }
             else{profilePic.src = 'banuser.jpg';
