@@ -267,12 +267,10 @@ async function eid(rowIndex2) {
                     tbl: 0,
                     card: matchedRow[12]                };
            
-                if (matchedRow2[5] !== 'Ban') {
+                if (matchedRow2[5] !== 'ban') {
                     if (localStorage.getItem("mymail") !== matchedRow[9]) {
-                        setTimeout(() => {
                             document.getElementById("popup").classList.remove("active");
                             window.location.replace('verify.html');
-                        }, 300);
                     } else {
                     if (matchedRow2[4] && matchedRow2[4] !== '123') {
     eid(rowIndex2);
