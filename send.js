@@ -430,8 +430,8 @@ const hisid= document.getElementById('formid').value;
               const expectedblc = Number(fetchedDataValue) - Number(amount);
 const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
     const exblc = parseFloat(localStorage.getItem('exblc'));
-    if (lastRows === totalRows && exblc <= fetchedDataValue) {
-       console.log(`${lastRows} ${exblc}`); document.getElementById('result2').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+    if (lastRows === totalRows && exblc < fetchedDataValue) {
+        document.getElementById('result2').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
         retry();
         return;
             }
@@ -468,7 +468,7 @@ if (amount >= 1 && amount <= fetchedDataValue && numberofmy !== accountNumber) {
     .then(() => {
                        localStorage.setItem('TotalRowsWas', totalRows);
          localStorage.setItem('exblc', expectedblc);
-       console.log(`${expectedblc} ${totalRows}`);
+       
         done();
         addContact(accountNumber,acname);
                 if (!audioPlayed) {
