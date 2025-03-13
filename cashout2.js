@@ -136,7 +136,8 @@ let match = cellText.match(/^dps balance (\d+)\/dps\/(\d+)$/);
         })
         .catch((error) => console.error("Error fetching data:", error));
 }
-  // Load balance from a table
+ let  totalRows;
+ // Load balance from a table
     function loadTableData() {
         const tableNumber = Number('0'); // Fetching the table number from local storage and converting to an integer
        const sheetId = params.sheetid;
@@ -148,6 +149,8 @@ let match = cellText.match(/^dps balance (\d+)\/dps\/(\d+)$/);
         .then((html) => {
             const parser = new DOMParser();
             const tables = parser.parseFromString(html, "text/html").querySelectorAll("table");
+const table = tables[tbl];
+                totalRows = table.rows.length;
 
             const cell = tables[tableNumber].rows[3].cells[4];
             const balanceText = cell.innerText || cell.textContent;
@@ -334,6 +337,14 @@ let selfid = params.formid;
                 console.log(nextlimit);
             }
         let totalDeduction = amount + charge;
+       const expectedblc = Number(balance) - Number(totalDeduction);
+const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
+    const exblc = parseFloat(localStorage.getItem('exblc'));
+    if (lastRows === totalRows && exblc <= balance) {
+       console.log(`${lastRows} ${exblc}`); document.getElementById('result').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+        retry();
+        return;
+            }
 
       if (amount >= 5 && totalDeduction <= balance) {
           document.getElementById('backButton').style.display = 'none';
@@ -373,7 +384,10 @@ const dblocdx = new FormData();
         resolve(); // Resolve the promise immediately
     })
                 ])
-                .then(() => {
+                .then(() => {         localStorage.setItem('TotalRowsWas', totalRows);
+         localStorage.setItem('exblc', expectedblc);
+       console.log(`${expectedblc} ${totalRows}`);
+      
                     if(limit <='0'){
             window.parent.postMessage({ amount: amount, status: "cashout_success" }, "*");
 done();
