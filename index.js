@@ -272,7 +272,7 @@ async function eid(rowIndex2) {
                             document.getElementById("popup").classList.remove("active");
                             window.location.replace('verify.html');
                     } else {
-                    if (matchedRow2[4] && matchedRow2[4] !== '123') {
+                    if (matchedRow2[4] !== '' && matchedRow2[4] !== '123') {
     eid(rowIndex2);
   const upnxt =  localStorage.getItem('score');
     const newupn = Number(upnxt) + Number(matchedRow2[4]);
