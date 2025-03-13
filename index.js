@@ -267,7 +267,7 @@ async function eid(rowIndex2) {
                     tbl: 0,
                     card: matchedRow[12]                };
            
-                if (matchedRow[11] !== '123') {
+                if (matchedRow2[5] !== 'Ban') {
                     if (localStorage.getItem("mymail") !== matchedRow[9]) {
                         setTimeout(() => {
                             document.getElementById("popup").classList.remove("active");
