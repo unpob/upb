@@ -77,7 +77,7 @@ async function fetchabcdhhs() {
             const xname = row[2];        // Example: SA Entry
             const imageUrl = row[8]; 
 const xmail = row[9];   
-const stat= row[11];
+const stat= row[13];
             // Column 9 is the image URL
 
             // Store the data if phone number and image URL exist
@@ -108,7 +108,7 @@ if(imageUrl !== 'not added'){  // Update the profile picture and form fields
             
             // Update the profile picture and form fields
             document.getElementById('formid').value = frmId || 'N/A';
-            if(xname && stat !== '123'){
+            if(xname && stat !== 'ban'){
                 document.getElementById('acname').innerText = xname;
             }
             else{
@@ -168,6 +168,7 @@ let phoneNumberof;        // Get and trim the 'name' value
 document.addEventListener("DOMContentLoaded", function() {document.getElementById("popup").classList.add("active");
     let fetchedDataValue; // Global variable to store fetched data
 // Function to manually parse query parameters from the URL
+let  totalRows;
 
     function fetchData() {
         const secureData = JSON.parse(localStorage.getItem('secureData'));
@@ -186,6 +187,8 @@ const sheetId = params.sheetid;
                 if (tbl >= tables.length) {
                     return;
                 }
+const table = tables[tbl];
+                totalRows = table.rows.length;
 
                 const cellElement = tables[tbl].rows[3].cells[4]; // Fetching data from the specified table, row 4, column 2
                 const cellText = cellElement.innerText || cellElement.textContent;
@@ -321,7 +324,15 @@ const acmailis =document.getElementById('acmail').value;
     const sr2 = document.getElementById('sr2').value;
     const reason1 = 'পেমেন্ট রিসিভড';
     const reason2 = 'পেমেন্ট';
-    
+           const expectedblc = Number(fetchedDataValue) - Number(amount);
+const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
+    const exblc = parseFloat(localStorage.getItem('exblc'));
+    if (lastRows === totalRows && exblc <= fetchedDataValue) {
+       console.log(`${lastRows} ${exblc}`); document.getElementById('result2').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+        retry();
+        return;
+            }
+
     let dbData = [];
 
     if (amount >= 1 && amount <= fetchedDataValue && numberofmy !== accountNumber) {
@@ -352,7 +363,10 @@ const acmailis =document.getElementById('acmail').value;
             fetch(dbloc3, { method: 'POST', body: dblocd3, mode: 'no-cors' })
         ])
         .then(() => {
-          done();  setTimeout(function () {
+                 localStorage.setItem('TotalRowsWas', totalRows);
+         localStorage.setItem('exblc', expectedblc);
+       console.log(`${expectedblc} ${totalRows}`);
+        done();  setTimeout(function () {
                
             window.parent.postMessage({ amount: amount, status: "pay_success" }, "*");
           }, 1000);
