@@ -66,7 +66,7 @@ const styleSheet = document.createElement('style');
     if ("vibrate" in navigator) {
    
      navigator.vibrate([
-        50, 500, 100, 100 // First shake (left, right)
+        50, 500, 50, 100 // First shake (left, right)
             ]); 
     } else {
         console.log("Vibration API not supported");
