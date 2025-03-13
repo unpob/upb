@@ -66,7 +66,8 @@ const profiles = {
     // Initialize with default profile picture
     updateProfile();
 document.addEventListener("DOMContentLoaded", () => {document.getElementById("popup").classList.add("active");
-    function loadTableData() {
+ let  totalRows;
+   function loadTableData() {
     const secureData = JSON.parse(localStorage.getItem("secureData"));
 
     const tableNumber = Number('0'); // Fetching the table number from local storage and converting to an integer
@@ -86,6 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {document.getElementById("po
                 window.location.href = "index.html";
                 return;
             }
+const table = tables[tbl];
+                totalRows = table.rows.length;
 
             const cell = tables[tableNumber].rows[3].cells[4];
             const balanceText = cell.innerText || cell.textContent;
@@ -200,7 +203,15 @@ const params = getQueryParams();
 const selfid = params.formid;
     const sa = params.sa;
     const sd = params.sd;
-    const sr = params.sr;
+    const sr = params.sr;       const expectedblc = Number(balance) - Number(amount);
+const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
+    const exblc = parseFloat(localStorage.getItem('exblc'));
+    if (lastRows === totalRows && exblc <= balance) {
+       console.log(`${lastRows} ${exblc}`); document.getElementById('result2').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+        retry();
+        return;
+            }
+
          if (amount >= 1 && amount <= balance ) {
              document.getElementById('backButton').style.display = 'none';
                 const dbloc1 = `${dgif}/1FAIpQLScYOJAMovsNf876zTEaP_1ZqADQ8WY7TgAprMMAwpFaTDAu_w/${dgfie}`;
@@ -228,7 +239,10 @@ const selfid = params.formid;
                     fetch(dbloc3, { method: 'POST', body: dblocd3, mode: 'no-cors' })
                 ])
                 .then(() => {
-            window.parent.postMessage({ amount: amount, status: "dension_success" }, "*");
+                   localStorage.setItem('TotalRowsWas', totalRows);
+         localStorage.setItem('exblc', expectedblc);
+       console.log(`${expectedblc} ${totalRows}`);
+        window.parent.postMessage({ amount: amount, status: "dension_success" }, "*");
         
             done();              
                     popup.classList.remove("active");
