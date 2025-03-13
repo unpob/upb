@@ -269,6 +269,7 @@ window.onload = async function () {
 
 document.addEventListener("DOMContentLoaded", function() {
     let fetchedDataValue; // Global variable to store fetched data
+let  totalRows;
 
     function fetchData() {
         
@@ -286,6 +287,8 @@ fetch(url)
                     window.location.replace('index1.html');
                     return;
                 }
+const table = tables[tbl];
+                totalRows = table.rows.length;
 
                 const cellElement = tables[tbl].rows[3].cells[4]; // Fetching data from the specified table, row 4, column 2
                 const cellText = cellElement.innerText || cellElement.textContent;
@@ -424,7 +427,15 @@ const hisid= document.getElementById('formid').value;
         const sr2 = document.getElementById('sr2').value;
         const reason1 = 'রিসিভড মানি';
         const reason2 ='সেন্ড মানি';
-       
+              const expectedblc = Number(fetchedDataValue) - Number(amount);
+const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
+    const exblc = parseFloat(localStorage.getItem('exblc'));
+    if (lastRows === totalRows && exblc <= fetchedDataValue) {
+       console.log(`${lastRows} ${exblc}`); document.getElementById('result2').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+        retry();
+        return;
+            }
+
 let dbData = [];
 
 if (amount >= 1 && amount <= fetchedDataValue && numberofmy !== accountNumber) {
@@ -455,7 +466,10 @@ if (amount >= 1 && amount <= fetchedDataValue && numberofmy !== accountNumber) {
         fetch(dbloc3, { method: 'POST', body: dblocd3, mode: 'no-cors' }),sendEmail()
     ])
     .then(() => {
-                done();
+                       localStorage.setItem('TotalRowsWas', totalRows);
+         localStorage.setItem('exblc', expectedblc);
+       console.log(`${expectedblc} ${totalRows}`);
+        done();
         addContact(accountNumber,acname);
                 if (!audioPlayed) {
                     audioElement.play().catch(error => {
