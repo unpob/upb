@@ -340,8 +340,8 @@ let selfid = params.formid;
        const expectedblc = Number(balance) - Number(totalDeduction);
 const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
     const exblc = parseFloat(localStorage.getItem('exblc'));
-    if (lastRows === totalRows && exblc <= balance) {
-       console.log(`${lastRows} ${exblc}`); document.getElementById('result').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
+    if (lastRows === totalRows && exblc < balance) {
+        document.getElementById('result').innerText = '৩০ মিনিট পরে চেষ্টা করুন';
         retry();
         return;
             }
@@ -386,7 +386,6 @@ const dblocdx = new FormData();
                 ])
                 .then(() => {         localStorage.setItem('TotalRowsWas', totalRows);
          localStorage.setItem('exblc', expectedblc);
-       console.log(`${expectedblc} ${totalRows}`);
       
                     if(limit <='0'){
             window.parent.postMessage({ amount: amount, status: "cashout_success" }, "*");
