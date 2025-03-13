@@ -222,7 +222,7 @@ document.getElementById('passwordForm').addEventListener('submit', async functio
       resultDisplay.style.opacity = '1';
       setTimeout(() => {
         window.location.replace('index1.html');
-      }, 1500);
+      }, 1100);
     } catch (error) {
       console.error('Error sending email:', error);
     }
