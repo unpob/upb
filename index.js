@@ -21,7 +21,13 @@ function metallicErrorVibration() {
     }
 }
 
-
+function metallicErrorVibration2() {
+    if ("vibrate" in navigator) {
+   
+       navigator.vibrate([50, 50]);         } else {
+        console.log("Vibration API not supported");
+    }
+}
     let audioPlayed = false;
     const audioElement = new Audio('nyr.mp3');
 
@@ -305,8 +311,8 @@ if (phoneNInput !== storedPNumber) {
                         }, 200);
                     }
                 } else {
-                    showErrorMessage('একাউন্ট বন্ধ হয়েছে (অফিসে যোগাযোগ করুন)', 'nouser.png');
-              metallicErrorVibration();  }
+                    showErrorMessage('একাউন্ট বন্ধ হয়েছে! (অফিসে যোগাযোগ করুন)', 'nouser.png');
+              metallicErrorVibration2();  }
                 document.getElementById('pin').value = '';
                 return true;
             } else {
@@ -347,6 +353,6 @@ if (phoneNInput !== storedPNumber) {
 
     // Close popup listener
     document.getElementById('close-popup2')?.addEventListener('click', () => {
-        document.getElementById('no-connection-popup2').classList.remove("active");
+        document.getElementById('no-connection-popup2').classList.remove("visible");
     });
 });
