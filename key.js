@@ -22,26 +22,51 @@
             });
 
             // Handle key clicks
-            keys.forEach(key => {
-                key.addEventListener('click', () => {
-                    if (!activeInput) return;
+               keys.forEach(key => {
+        let holdTimer;
+        const holdDuration = 500; // 1 second for hold
 
-                    const value = key.dataset.value;
-
-                    if (value === 'clear') {
-                        activeInput.value = activeInput.value.slice(0, -1);
-                   key.addEventListener('mousedown', () => holdTimer = setTimeout(() => activeInput.value = '', 500)); key.addEventListener('mouseup', () => clearTimeout(holdTimer)); key.addEventListener('touchstart', (e) => { e.preventDefault(); holdTimer = setTimeout(() => activeInput.value = '', 500); }); key.addEventListener('touchend', () => clearTimeout(holdTimer));
-                    } else if (value === 'close') {
-                        keyboardContainer.classList.remove('active');
-                        activeInput.blur(); // Remove focus when closing
-                            activeInput.style.color = '';
-                
-                    } else {
-                        activeInput.value += value;
-                    }
+        // Hold event listeners only for 'clear' key
+        if (key.dataset.value === 'clear') {
+            key.addEventListener('mousedown', (e) => {
+                if (!activeInput) return;
+                // e.stopPropagation(); // Avoid if it breaks click
+                holdTimer = setTimeout(() => {
+                    activeInput.value = '';
                     activeInput.dispatchEvent(new Event('input'));
-                    activeInput.style.boxShadow = 'inset 1px 1px 2px #BABECC,inset -1px -1px 2px #ffffff73'; // Ensure input stays focused
-                });
+                }, holdDuration);
             });
+            key.addEventListener('mouseup', () => clearTimeout(holdTimer));
+            key.addEventListener('mouseleave', () => clearTimeout(holdTimer));
+            key.addEventListener('touchstart', (e) => {
+                if (!activeInput) return;
+                // Move preventDefault to specific cases if needed
+                holdTimer = setTimeout(() => {
+                    activeInput.value = '';
+                    activeInput.dispatchEvent(new Event('input'));
+                }, holdDuration);
+            });
+            key.addEventListener('touchend', (e) => clearTimeout(holdTimer));
+            key.addEventListener('touchcancel', () => clearTimeout(holdTimer));
+        }
+
+        // Click event for all keys
+        key.addEventListener('click', (e) => {
+            if (!activeInput) return;
+
+            const value = key.dataset.value;
+
+            if (value === 'clear') {
+                activeInput.value = activeInput.value.slice(0, -1); // Single click deletes one character
+            } else if (value === 'close') {
+                keyboardContainer.classList.remove('active');
+                activeInput.blur();
+                activeInput.style.color = '';
+            } else {
+                activeInput.value += value;
+            }
+            activeInput.dispatchEvent(new Event('input'));
+            activeInput.style.boxShadow = 'inset 1px 1px 2px #BABECC,inset -1px -1px 2px #ffffff73';
         });
- 
+    });
+});
