@@ -21,31 +21,49 @@
                 });
             });
 
-           keys.forEach(key => {
+        keys.forEach(key => {
     let holdTimer;
     const holdDuration = 500; // Time in milliseconds to consider it a hold
 
-    key.addEventListener('mousedown', () => {
+    // Handle start of interaction (mouse or touch)
+    const startHold = () => {
         if (!activeInput) return;
 
         const value = key.dataset.value;
 
         if (value === 'clear') {
-            // Start timer on mousedown
             holdTimer = setTimeout(() => {
                 activeInput.value = ''; // Clear entire input when held
                 activeInput.dispatchEvent(new Event('input'));
             }, holdDuration);
         }
-    });
+    };
 
+    // Handle end of interaction (mouse or touch)
+    const endHold = () => {
+        clearTimeout(holdTimer);
+    };
+
+    // Mouse events
+    key.addEventListener('mousedown', startHold);
+    key.addEventListener('mouseup', endHold);
+    key.addEventListener('mouseleave', endHold);
+
+    // Touch events
+    key.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent default touch behavior (like scrolling)
+        startHold();
+    });
+    key.addEventListener('touchend', endHold);
+    key.addEventListener('touchcancel', endHold);
+
+    // Click event for regular interaction
     key.addEventListener('click', () => {
         if (!activeInput) return;
 
         const value = key.dataset.value;
 
         if (value === 'clear') {
-            // Single click removes last character
             activeInput.value = activeInput.value.slice(0, -1);
         } else if (value === 'close') {
             keyboardContainer.classList.remove('active');
@@ -55,17 +73,7 @@
             activeInput.value += value;
         }
         activeInput.dispatchEvent(new Event('input'));
-        activeInput.style.boxShadow = 'inset 1px 1px 2px #BABECC,inset -1px -1px 2px #ffffff73'; // Ensure input stays focused
-    });
-
-    // Clear timer if mouse is released before hold duration
-    key.addEventListener('mouseup', () => {
-        clearTimeout(holdTimer);
-    });
-
-    // Also clear timer if mouse leaves button
-    key.addEventListener('mouseleave', () => {
-        clearTimeout(holdTimer);
+        activeInput.style.boxShadow = 'inset 1px 1px 2px #BABECC,inset -1px -1px 2px #ffffff73';
     });
 });
         });
