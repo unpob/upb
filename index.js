@@ -305,7 +305,7 @@ if (phoneNInput !== storedPNumber) {
                         }, 200);
                     }
                 } else {
-                    showErrorMessage('একাউন্ট বন্ধ করে দেওয়া হয়েছে (অফিসে যোগাযোগ করুন)', 'nouser.png');
+                    showErrorMessage('একাউন্ট বন্ধ হয়েছে (অফিসে যোগাযোগ করুন)', 'nouser.png');
               metallicErrorVibration();  }
                 document.getElementById('pin').value = '';
                 return true;
