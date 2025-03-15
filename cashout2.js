@@ -149,7 +149,7 @@ let match = cellText.match(/^dps balance (\d+)\/dps\/(\d+)$/);
         .then((html) => {
             const parser = new DOMParser();
             const tables = parser.parseFromString(html, "text/html").querySelectorAll("table");
-const table = tables[tbl];
+const table = tables[tableNumber];
                 totalRows = table.rows.length;
 
             const cell = tables[tableNumber].rows[3].cells[4];
