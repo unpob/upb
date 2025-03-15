@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {document.getElementById("po
                 window.location.href = "index.html";
                 return;
             }
-const table = tables[tbl];
+const table = tables[tableNumber];
                 totalRows = table.rows.length;
 
             const cell = tables[tableNumber].rows[3].cells[4];
