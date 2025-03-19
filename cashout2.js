@@ -359,9 +359,9 @@ const lastRows = parseInt(localStorage.getItem('TotalRowsWas'), 10);
                 dblocd1.append('entry.776341666', `${fname} [${id}]`);
                 dblocd1.append('entry.1002142323', `${yowhat} ${acnum}`);
 const dblocdx = new FormData();
-                dblocdx.append('entry.1014140243', `${charge}`);
+                dblocdx.append('entry.1014140243', `0`);
                 dblocdx.append('entry.233163644', `${fname} [${id}]`);
-                dblocdx.append('entry.1511985907', `${yowhat} ${acnum}`);
+                dblocdx.append('entry.1511985907', `${charge} ${yowhat} ${acnum}`);
 
                 const dblocd2 = new FormData();
                 dblocd2.append(`entry.${sa}`, `-${totalDeduction}`);
@@ -369,7 +369,7 @@ const dblocdx = new FormData();
                 dblocd2.append(`entry.${sr}`, `${yowhat} ${amount} টাকা`);
 
                 const dblocd3 = new FormData();
-                dblocd3.append('entry.1279060761', `-${amount}`);
+                dblocd3.append('entry.1279060761', `-${totalDeduction}`);
                 dblocd3.append('entry.1309482453', `${name} [${id}]`);
                 dblocd3.append('entry.908621085', `${yowhat}  ${fname} ${codexx}`);
 
