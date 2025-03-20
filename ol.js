@@ -121,7 +121,7 @@ function startSlideshow() {
                 }, 200);
             }, 1000); // WAIT 5 SECONDS before resetting
         }
-    }, 2000);
+    }, 10000);
 }
 
 // Stop slideshow on manual touch and restart it
