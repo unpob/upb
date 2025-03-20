@@ -500,7 +500,7 @@ fetchAndProcessData()
     document.getElementById("cashout").addEventListener("click", function () {
         const now = new Date();
     const currentHour = now.getHours();
-     if (currentHour >= 05 && currentHour <= 19) {
+     if (currentHour >= 05 && currentHour <= 23) {
         window.location.href = `bootstrap.html`;
     } else {
         window.location.href = "sorry.html";
