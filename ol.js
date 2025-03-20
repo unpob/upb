@@ -16,9 +16,9 @@ function fetchData() {
 
 window.onload = fetchData;
 const images = [
+    { src: "https://nfcard.github.io/ol/upnstop.jpg", link: "bootstrap.html" },
     { src: "https://nfcard.github.io/ol/eid2000.jpg", link: "taptap.html" },
-    { src: "https://nfcard.github.io/ol/chout2.jpg", link: "bootstrap.html" },
-    { src: "https://nfcard.github.io/ol/weekly.jpg", link: "#" }
+    { src: "https://nfcard.github.io/ol/chout2.jpg", link: "bootstrap.html" }
 ];
 
 const container = document.querySelector('.gif-container');
@@ -121,7 +121,7 @@ function startSlideshow() {
                 }, 200);
             }, 1000); // WAIT 5 SECONDS before resetting
         }
-    }, 10000);
+    }, 2000);
 }
 
 // Stop slideshow on manual touch and restart it
