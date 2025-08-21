@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-   document.querySelector('.low-balance').style.display = "none";
-
    function changegifImage() {
     document.querySelector('.popup-content img').src = 'https://nfcard.github.io/login/gift.gif'; // Initial image
     setInterval(() => {
